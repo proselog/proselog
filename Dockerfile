@@ -6,21 +6,16 @@ RUN apt-get update && apt-get install -y openssl
 
 RUN npm i -g pnpm
 
-##### DEPS
-FROM base as deps
-
-WORKDIR /app
-
-ADD . .
-
-RUN pnpm i
-
 ##### BUILD
-FROM deps as build
+FROM base as build
 
 WORKDIR /app
 
-COPY --from=deps /app /app
+COPY package.json pnpm-lock.yaml ./
+
+RUN pnpm install --frozen-lockfile
+
+COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV NODE_ENV production
@@ -38,4 +33,3 @@ COPY --from=build /app/public /app/public
 COPY --from=build /app/.next/static /app/.next/static
 
 CMD ["pnpm", "start"]
-
