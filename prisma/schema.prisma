@@ -75,6 +75,8 @@ model Membership {
     lastSwitchedTo DateTime       @default(now())
     config         Json           @default("{}")
 
+    @@index([userId])
+    @@index([siteId])
     @@map("memberships")
 }
 
@@ -131,5 +133,6 @@ model Page {
     emailStatus      PageEmailStatus?
 
     @@unique([siteId, slug])
+    @@index([publishedAt])
     @@map("pages")
 }
